@@ -1,3 +1,5 @@
+# Question : Implement a class Calculator. The __init__ function should take  numbers as inputs, for which you can define default values. The class should have member functions to add, substract, etc. these numbers. The class should also have a member variable result holding the result of the operation and a display function to print it.
+
 class Calculator:
     def __init__(self, num1=0, num2=0):
         self.num1 = num1
