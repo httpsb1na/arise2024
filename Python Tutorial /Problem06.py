@@ -1,3 +1,5 @@
+# Plot y = sin(x) with 1000 points. 
+
 import matplotlib.pyplot as s
 import numpy as o
 
