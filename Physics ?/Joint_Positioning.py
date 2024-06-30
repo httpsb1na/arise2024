@@ -1,5 +1,5 @@
 I = 0.00012  # kg*m^2
-torques = [0.003, 0.002, 0.001]  # Nm
+torques = [0.003, 0.002, 0.001] 
 dt = 0.5  # seconds
 
 theta = 0  # initial position in radians
