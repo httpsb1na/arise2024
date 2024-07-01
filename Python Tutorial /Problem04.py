@@ -4,7 +4,8 @@
 # Instantiate your class and test its methods.
 
 class a:
-    def getString(self):
+    def getString(self, name, age):
         self.string = input("Enter a string: ")
     def printString(self):
         print(self.string.upper())
+
