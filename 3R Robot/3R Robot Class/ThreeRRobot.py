@@ -75,7 +75,7 @@ class ThreeRRobot:
         return G
 
     def direct_dynamic_model(self, q, dq, tau):
-        # Solve for mass matrix, Coriolis matrix, and gravity vector
+        # Compute mass matrix, Coriolis matrix, and gravity vector
         M = self.mass_matrix(q)
         C = self.coriolis_matrix(q, dq)
         G = self.gravity_vector(q)
@@ -83,6 +83,20 @@ class ThreeRRobot:
         # Solve for joint accelerations
         ddq = np.linalg.inv(M) @ (tau - C @ dq - G)
         return ddq
+
+    def jacobian(self, q):
+        theta1, theta2, theta3 = q
+        J = np.array([
+            [-self.L1 * np.sin(theta1) - self.L2 * np.sin(theta1 + theta2) - self.L3 * np.sin(theta1 + theta2 + theta3), -self.L2 * np.sin(theta1 + theta2) - self.L3 * np.sin(theta1 + theta2 + theta3), -self.L3 * np.sin(theta1 + theta2 + theta3)],
+            [self.L1 * np.cos(theta1) + self.L2 * np.cos(theta1 + theta2) + self.L3 * np.cos(theta1 + theta2 + theta3), self.L2 * np.cos(theta1 + theta2) + self.L3 * np.cos(theta1 + theta2 + theta3), self.L3 * np.cos(theta1 + theta2 + theta3)]
+        ])
+        return J
+
+    def direct_kinematic_model(self, q, dq):
+        J = self.jacobian(q)
+        end_effector_velocity = J @ dq
+        return end_effector_velocity
+
 
 
 # Example usage
