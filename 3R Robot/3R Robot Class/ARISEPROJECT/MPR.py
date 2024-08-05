@@ -106,23 +106,33 @@ def simulate_kick(robot_id, robot_id2, ball_id, constraint_id, controller):
 
     if isinstance(controller, LQRController):
         # LQR kicking logic
-        for i in range(150):
-            p.stepSimulation()
-            time.sleep(1./120.)  # Increase time step to make it faster
+        for i in range(1000):
+        p.stepSimulation()
+        time.sleep(1./240.)
 
-            if i == 50:
-                p.removeConstraint(constraint_id)
+        if i == 50:
+            p.removeConstraint(constraint_id)
 
-            if i == 70:
-                current_position = p.getJointState(robot_id, 2)[0]
-                control_input = controller.compute_control(1.0, current_position)
-                p.setJointMotorControl2(robot_id, 2, p.POSITION_CONTROL, targetPosition=control_input, force=5000)
+        if i == 100:
+            # First robot kicks with adjusted control for a straighter kick
+            current_position = p.getJointState(robot_id, 2)[0]
+            control_input = controller.compute_control(1.0, current_position)  # Adjusted setpoint for straighter kick
+            p.setJointMotorControl2(robot_id, 2, p.POSITION_CONTROL, targetPosition=control_input, force=5000)  # Increased force
 
-            if i == 90:
-                current_position = p.getJointState(robot_id2, 2)[0]
-                control_input = controller.compute_control(1.0, current_position)
-                p.setJointMotorControl2(robot_id2, 2, p.POSITION_CONTROL, targetPosition=control_input, force=5000)
-            
+        if i == 150:
+            # Immediately reset first robot's leg
+            p.setJointMotorControl2(robot_id, 2, p.POSITION_CONTROL, targetPosition=0, force=4500)
+
+        if i == 105:
+            # Second robot kicks without any conditions
+            current_position = p.getJointState(robot_id2, 2)[0]
+            control_input = controller.compute_control(1.0, current_position)  # Same adjustment as first robot
+            p.setJointMotorControl2(robot_id2, 2, p.POSITION_CONTROL, targetPosition=control_input, force=5000)  # Same increased force
+        
+        if i == 110:
+            # Immediately reset second robot's leg
+            p.setJointMotorControl2(robot_id2, 2, p.POSITION_CONTROL, targetPosition=0, force=4500)            
+        
         # Wait until the kick is fully complete before resetting legs
         time.sleep(0.1)
         p.setJointMotorControl2(robot_id, 2, p.POSITION_CONTROL, targetPosition=reset_position[0], force=4500)
